@@ -29,27 +29,33 @@ char** parse_args(char *line)
 char shellexec(char *command)
 {
     pid_t parent_pid = getpid();
+    pid_t child_pid = fork();
 
-    pid_t child = fork();
-    if (child == -1)
+    char **args = parse_args(command);
+    if (child_pid == -1)
     {
         printf("ERROR - %s\n", strerror(errno));
+        return 0;
     }
-    else if (child)
+    else if (child_pid)
     {
         int status;
-        pid_t wait_res = waitpid(child, &status, 0);
+        pid_t wait_res = waitpid(child_pid, &status, 0);
         if (wait_res == -1)
         {
             printf("ERROR - %s\n", strerror(errno));
         }
+
+        if (strcmp(args[0], "cd") == 0) chdir(args[1]);
     }
     else
     {
-        char **args = parse_args(command);
         execvp(args[0], args);
         
         printf("ERROR - %s\n", strerror(errno));
+        return 0;
     }
+    free(args);
+
     return 1;
 }
