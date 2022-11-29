@@ -31,23 +31,25 @@ char shellexec(char *command)
     pid_t parent_pid = getpid();
 
     pid_t child = fork();
-    if (child)
+    if (child == -1)
     {
-        // parent
-        printf("Parent Process\n");
-        
+        printf("ERROR - %s\n", strerror(errno));
+    }
+    else if (child)
+    {
         int status;
-        wait(&status);
+        pid_t wait_res = waitpid(child, &status, 0);
+        if (wait_res == -1)
+        {
+            printf("ERROR - %s\n", strerror(errno));
+        }
     }
     else
     {
-        // child
-        // printf("Child Process\n");
-
         char **args = parse_args(command);
         execvp(args[0], args);
         
         printf("ERROR - %s\n", strerror(errno));
-    } 
+    }
     return 1;
 }
