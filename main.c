@@ -2,9 +2,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 int main()
 {
-    //char commandArr[256];
     printf("-> ");
     char *line = malloc(256);
     while (fgets(line, 256, stdin)) {
@@ -12,8 +12,5 @@ int main()
         shellexec(line);
         printf("-> ");
     }
-    
-    //shellexec("echo hello world");
-    // shellexec("ls -l");
-    // shellexec("pwd");
+
 }
