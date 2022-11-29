@@ -2,7 +2,10 @@
 
 int main()
 {
-    shellexec("echo hello world");
+    char cmd[] = "cd ..";
+    shellexec(cmd);
+    char cmd1[] = "pwd";
+    // shellexec(cmd1);
     // shellexec("ls -l");
     // shellexec("pwd");
 }
