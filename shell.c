@@ -29,9 +29,14 @@ char** parse_args(char *line)
 char shellexec(char *command)
 {
     pid_t parent_pid = getpid();
-    pid_t child_pid = fork();
 
     char **args = parse_args(command);
+    if (strcmp(args[0], "cd") == 0) {
+        chdir(args[1]);
+        return 1;
+    }
+
+    pid_t child_pid = fork();
     if (child_pid == -1)
     {
         printf("ERROR - %s\n", strerror(errno));
@@ -45,8 +50,6 @@ char shellexec(char *command)
         {
             printf("ERROR - %s\n", strerror(errno));
         }
-
-        if (strcmp(args[0], "cd") == 0) chdir(args[1]);
     }
     else
     {
