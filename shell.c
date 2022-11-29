@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
+#include <errno.h>
+#include <sys/wait.h>
 
 #include <stdio.h>
 
@@ -33,11 +35,19 @@ char shellexec(char *command)
     {
         // parent
         printf("Parent Process\n");
+        
+        int status;
+        wait(&status);
     }
     else
     {
         // child
-        printf("Child Process\n");
+        // printf("Child Process\n");
+
+        char **args = parse_args(command);
+        execvp(args[0], args);
+        
+        printf("ERROR - %s\n", strerror(errno));
     } 
     return 1;
 }
