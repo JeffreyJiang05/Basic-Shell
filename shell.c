@@ -7,6 +7,7 @@
 #include <sys/wait.h>
 
 #include <stdio.h>
+#include "shellutil.h"
 
 #define MAX_ARGS 10
 
