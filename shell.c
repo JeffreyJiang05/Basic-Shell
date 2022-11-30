@@ -35,6 +35,10 @@ char shellexec(char *command)
         chdir(args[1]);
         return 1;
     }
+    if (strcmp(args[0], "exit") == 0){
+	printf("Bye!\n");
+	exit(0);
+    }
 
     pid_t child_pid = fork();
     if (child_pid == -1)
