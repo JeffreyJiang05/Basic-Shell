@@ -63,10 +63,12 @@ char shellexec(char *command)
         if (errno == ENOENT)
         {
             printf("No such command.\n");
-        }
+            exit(0);
+	}
         else
         {
             printf("ERROR - %s\n", strerror(errno));
+	    exit(0);
         }
         
         return 0;
