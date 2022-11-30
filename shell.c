@@ -33,7 +33,11 @@ char shellexec(char *command)
     char **args = parse_args(command);
     if (strcmp(args[0], "cd") == 0) {
         chdir(args[1]);
-        return 1;
+        return 0;
+    }
+    if (strcmp(args[0], "exit") == 0){
+	printf("Bye!\n");
+	exit(0);
     }
 
     pid_t child_pid = fork();
