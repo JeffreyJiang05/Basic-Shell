@@ -15,7 +15,15 @@ int main()
     {
         line[strlen(line) - 1] = '\0';
         stripcommand(line);
-        shellexec(line);
-        printf("-> ");
+        if (substring(line, " ; ") == 1 || substring(line, "; ") == 1) {
+            //printf("Semicolon detected\n");
+            semiColon(line);
+            printf("-> ");
+        }
+        else {
+            shellexec(line);
+            printf("-> ");
+        }
+        
     }
 }
