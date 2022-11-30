@@ -28,7 +28,10 @@ int substring(char * line, char * sub) {
 void *semiColon(char * cmd) {
     char *token = strsep(&cmd, ";");
     while (token != NULL) {
-        printf("%s\n", token);
+        int i = 0;
+        if (token[i] == ' ') {
+            token = token + 1;
+        }
         shellexec(token);
         token = strsep(&cmd, ";");
     }
