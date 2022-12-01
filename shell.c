@@ -33,7 +33,7 @@ char shellexec(char *command)
     char **args = parse_args(command);
     if (strcmp(args[0], "cd") == 0) {
         chdir(args[1]);
-        return 1;
+        return 0;
     }
     if (strcmp(args[0], "exit") == 0){
 	printf("Bye!\n");
@@ -57,6 +57,7 @@ char shellexec(char *command)
     }
     else
     {
+	    //Is this when command is empty or not entered?
         execvp(args[0], args);
         
         if (errno == ENOENT)
