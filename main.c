@@ -5,6 +5,7 @@
 
 #include "shell.h"
 #include "shellutil.h"
+#include "redirect.h"
 
 #define LINE_BUFFER_SIZE 256
 

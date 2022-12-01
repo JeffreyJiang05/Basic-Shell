@@ -57,6 +57,7 @@ char shellexec(char *command)
     }
     else
     {
+	    //Is this when command is empty or not entered?
         execvp(args[0], args);
         
         if (errno == ENOENT)
