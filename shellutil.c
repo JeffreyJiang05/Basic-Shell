@@ -14,17 +14,13 @@ char *stripcommand(char *cmd)
         }
     }
     cmd[j] = '\0';
+    if (cmd[strlen(cmd) - 1] == ' ')
+    {
+        cmd[strlen(cmd) - 1] = '\0';
+    }
     return cmd;
 }
 
-int substring(char * line, char * sub) {
-    if (strstr(line, sub) != NULL) {
-        return 1;
-    }
-    else {
-        return 0;
-    }
-}
 void *semiColon(char * cmd) {
     char *token = strsep(&cmd, ";");
     while (token != NULL) {
@@ -32,6 +28,12 @@ void *semiColon(char * cmd) {
         if (token[i] == ' ') {
             token = token + 1;
         }
+        if ((strlen(token)) == ' ') {
+            token[strlen(token)] = '\0';
+        }
+        token[strlen(token)] = '\0';
+        stripcommand(token);
+        //printf("%s\n", token);
         shellexec(token);
         token = strsep(&cmd, ";");
     }
