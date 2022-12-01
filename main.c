@@ -18,6 +18,7 @@ int main()
         stripcommand(line);
         if (substring(line, " ; ") == 1 || substring(line, "; ") == 1) {
             //printf("Semicolon detected\n");
+            line[strlen(line) - 1] = '\0';
             semiColon(line);
             printf("-> ");
         }
