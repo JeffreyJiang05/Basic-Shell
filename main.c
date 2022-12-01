@@ -2,17 +2,23 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <signal.h>
 
 #include "shell.h"
 #include "shellutil.h"
 
 #define LINE_BUFFER_SIZE 256
-
+ static void sighandler(int signo){
+	if (signo == SIGINT){
+		printf("\n");
+	}
+ }
 int main() {
+	signal(SIGINT, sighandler);
 	char currentDir[100];
 	printf("\033[1m%s\033[0m %s -> ", getlogin(), getcwd(currentDir,100));
 	char *line = malloc(LINE_BUFFER_SIZE);
-	while (fgets(line, LINE_BUFFER_SIZE, stdin)) {\
+	while (fgets(line, LINE_BUFFER_SIZE, stdin)) {
         if (substring(line, " ; ") == 1 || substring(line, "; ") == 1) {
             //printf("Semicolon detected\n");
             semiColon(line);
