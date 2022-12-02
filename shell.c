@@ -10,6 +10,7 @@
 
 #define MAX_ARGS 10
 
+
 char** parse_args(char *line)
 {
     int i = 0;
@@ -39,6 +40,8 @@ char shellexec(char *command)
 	printf("Bye!\n");
 	exit(0);
     }
+
+
 
     pid_t child_pid = fork();
     if (child_pid == -1)
