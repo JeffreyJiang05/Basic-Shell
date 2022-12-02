@@ -28,9 +28,6 @@ void *semiColon(char * cmd) {
         if (token[i] == ' ') {
             token = token + 1;
         }
-        if ((strlen(token)) == ' ') {
-            token[strlen(token)] = '\0';
-        }
         token[strlen(token)] = '\0';
         stripcommand(token);
         //printf("%s\n", token);
