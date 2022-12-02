@@ -2,15 +2,29 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <signal.h>
 
 #include "shell.h"
 #include "shellutil.h"
+#include "redirect.h"
 
 #define LINE_BUFFER_SIZE 256
+char currentDir[100];
+static void sigmain(int signo){
+	if (signo == SIGINT){
+		printf("\n\033[1m%s\033[0m %s -> ", getlogin(), getcwd(currentDir,100));
+		fflush(stdout);
+	}
+}
+static void sigchd(int signo){
+	if (signo==SIGINT){
+		printf("\n");
+		fflush(stdout);
 
+	}
+}
 int main() {
-    
-	char currentDir[100];
+	signal(SIGINT,sigmain);
 	printf("\033[1m%s\033[0m %s -> ", getlogin(), getcwd(currentDir,100));
 	char *line = malloc(LINE_BUFFER_SIZE);
 	while (fgets(line, LINE_BUFFER_SIZE, stdin)) {
@@ -21,10 +35,12 @@ int main() {
             printf("\033[1m%s\033[0m %s -> ", getlogin(), getcwd(currentDir,100));
         }
         else {
-            line[strlen(line) - 1] = '\0';
-        	stripcommand(line);
-		    shellexec(line);
-		    printf("\033[1m%s\033[0m %s -> ", getlogin(), getcwd(currentDir,100));
+        	line[strlen(line) - 1] = '\0';
+		stripcommand(line);
+        	signal(SIGINT,sigchd);
+		shellexec(line);
+		signal(SIGINT,sigmain);
+		printf("\033[1m%s\033[0m %s -> ", getlogin(), getcwd(currentDir,100));
         }
     }  
 }   

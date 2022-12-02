@@ -6,8 +6,10 @@
 #include <sys/wait.h>
 
 #include <stdio.h>
+#include "shellutil.h"
 
 #define MAX_ARGS 10
+
 
 char** parse_args(char *line)
 {
@@ -39,6 +41,8 @@ char shellexec(char *command)
 	exit(0);
     }
 
+
+
     pid_t child_pid = fork();
     if (child_pid == -1)
     {
@@ -56,6 +60,7 @@ char shellexec(char *command)
     }
     else
     {
+	    //Is this when command is empty or not entered?
         execvp(args[0], args);
         
         if (errno == ENOENT)
