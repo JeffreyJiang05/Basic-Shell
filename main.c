@@ -9,10 +9,10 @@
 #include "redirect.h"
 
 #define LINE_BUFFER_SIZE 256
-char currentDir[100];
+static char currentDir[LINE_BUFFER_SIZE];
 static void sigmain(int signo){
 	if (signo == SIGINT){
-		printf("\n\033[1m%s\033[0m %s -> ", getlogin(), getcwd(currentDir,100));
+		printf("\n\033[1m%s\033[0m %s -> ", getlogin(), getcwd(currentDir,LINE_BUFFER_SIZE));
 		fflush(stdout);
 	}
 }
@@ -25,14 +25,14 @@ static void sigchd(int signo){
 }
 int main() {
 	signal(SIGINT,sigmain);
-	printf("\033[1m%s\033[0m %s -> ", getlogin(), getcwd(currentDir,100));
+	printf("\033[1m%s\033[0m %s -> ", getlogin(), getcwd(currentDir,LINE_BUFFER_SIZE));
 	char *line = malloc(LINE_BUFFER_SIZE);
 	while (fgets(line, LINE_BUFFER_SIZE, stdin)) {
         if (strstr(line, " ; ") || strstr(line, "; ") || strstr(line, " ;")) {
             //printf("Semicolon detected\n");
             line[strlen(line) - 1] = '\0';
             semiColon(line);
-            printf("\033[1m%s\033[0m %s -> ", getlogin(), getcwd(currentDir,100));
+            printf("\033[1m%s\033[0m %s -> ", getlogin(), getcwd(currentDir,LINE_BUFFER_SIZE));
         }
         else {
         	line[strlen(line) - 1] = '\0';
@@ -40,7 +40,7 @@ int main() {
         	signal(SIGINT,sigchd);
 		shellexec(line);
 		signal(SIGINT,sigmain);
-		printf("\033[1m%s\033[0m %s -> ", getlogin(), getcwd(currentDir,100));
+		printf("\033[1m%s\033[0m %s -> ", getlogin(), getcwd(currentDir,LINE_BUFFER_SIZE));
         }
     }  
 }   
