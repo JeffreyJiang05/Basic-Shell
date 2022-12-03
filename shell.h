@@ -10,6 +10,6 @@
  * @arg command - the command to execute as a string
  * @return a boolean that signifies if the command was successful or failed
  */
-char shellexec(char *command);
+void shellexec(char *command);
 
 #endif
