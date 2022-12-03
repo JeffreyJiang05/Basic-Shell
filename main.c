@@ -10,12 +10,6 @@
 #define LINE_BUFFER_SIZE 256
 
 int main() {
-
-    char buffer[LINE_BUFFER_SIZE] = "> copy.txt ls < main.c -al < redirect.h >> text.txt";
-    struct cmd_cond cond;
-    process_cmd_cond(&cond, buffer); 
-    print_cmd_cond(&cond);
-    
 	char currentDir[100];
 	printf("\033[1m%s\033[0m %s -> ", getlogin(), getcwd(currentDir,100));
 	char *line = malloc(LINE_BUFFER_SIZE);

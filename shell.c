@@ -13,14 +13,19 @@ char shellexec(char *command)
 {
     pid_t parent_pid = getpid();
 
-    char **args = parse_args(command);
-    if (strcmp(args[0], "cd") == 0) {
-        chdir(args[1]);
+    stripcommand(command);
+    if (strncmp(command, "cd", 2) == 0) 
+    {
+        char path[255];
+        int has_path = sscanf(command, "cd %s", path);
+        printf("%s]\n", command);
+        chdir(has_path ? path : "");
         return 0;
     }
-    if (strcmp(args[0], "exit") == 0){
-	printf("Bye!\n");
-	exit(0);
+    if (strncmp(command, "exit", 4) == 0)
+    {
+        printf("Bye!\n");
+        exit(0);
     }
 
     pid_t child_pid = fork();
@@ -40,7 +45,7 @@ char shellexec(char *command)
     }
     else
     {
-        execvp(args[0], args);
+        // execvp(args[0], args);
         
         if (errno == ENOENT)
         {
@@ -55,7 +60,6 @@ char shellexec(char *command)
         
         return 0;
     }
-    free(args);
 
     return 1;
 }
