@@ -25,7 +25,7 @@ char shellexec(char *command)
         if (!has_path) path[0] = '\0';
 
         char *argument = path;
-	    char *newArg = malloc(strlen(path) + strlen(userdir) + 1);
+        char *newArg = malloc(strlen(path) + strlen(userdir) + 1);
         if (path[0] == '~')
         {
             strcpy(newArg, userdir);

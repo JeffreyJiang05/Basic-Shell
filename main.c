@@ -20,8 +20,8 @@ static void sigmain(int signo)
 		fflush(stdout);
 	}
 }
-static void sigchd(int signo)
-{ //If a program is running, it will not print the header.
+static void sigchd(int signo) //If a program is running, it will not print the header.
+{ 
 	if (signo == SIGINT)
     {
 		printf("\n");
@@ -45,7 +45,6 @@ char *getWorkDir()
 		strcpy(currentDir, temp);
 	}
 }
-
 
 int main()
 {
