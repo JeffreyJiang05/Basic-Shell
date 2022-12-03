@@ -57,18 +57,17 @@ char shellexec(char *command)
     }
     else
     {
-	    
         execvp(args[0], args);
         
         if (errno == ENOENT)
         {
             printf("No such command.\n");
             exit(0);
-	}
+	    }
         else
         {
             printf("ERROR - %s\n", strerror(errno));
-	    exit(0);
+	        exit(0);
         }
         
         return 0;

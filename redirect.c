@@ -5,8 +5,10 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <errno.h>
 
 #include "shell.h"
+#include "shellutil.h"
 
 void process_cmd_cond(struct cmd_cond *cond, char *command)
 {
@@ -67,6 +69,46 @@ void print_cmd_cond(struct cmd_cond *cond)
     printf("in: %s\n", cond->flag & cmd_in ? cond->in : "STDIN");
     printf("out: %s\n", cond->flag & cmd_out ? cond->out : "STDOUT");
     printf("append: %s\n", cond->flag & cmd_append ? "True" : "False");
+}
+
+void exec_cmd(struct cmd_cond *cond)
+{
+    if (cond->flag & cmd_has_command)
+    {
+        int backup_stdin = dup(STDIN_FILENO);
+        int backup_stdout = dup(STDOUT_FILENO);
+        if (cond->flag & cmd_in)
+        {
+            int infd = open(cond->in, O_RDONLY);
+            if (infd == -1) {
+                printf("Input file does not exist\n");
+                return; 
+            }
+            dup2(infd, STDIN_FILENO);
+        }
+
+        char **args = parse_args(stripcommand(cond->core_command));
+        execvp(args[0], args);
+
+        if (errno == ENOENT)
+        {
+            printf("No such command.\n");
+            exit(0);
+	    }
+        else
+        {
+            printf("ERROR - %s\n", strerror(errno));
+	        exit(0);
+        }
+
+        // cleanup
+        dup2(backup_stdin, STDIN_FILENO);
+        dup2(backup_stdout, STDOUT_FILENO);
+    }
+    else
+    {
+        printf("NO COMMAND SPECIFIED\n");
+    }
 }
 
 void redir_to(char *exec_command, char *file)
