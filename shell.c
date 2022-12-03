@@ -8,6 +8,7 @@
 #include <stdio.h>
 
 #include "shellutil.h"
+#include "redirect.h"
 
 char shellexec(char *command)
 {
@@ -18,7 +19,6 @@ char shellexec(char *command)
     {
         char path[255];
         int has_path = sscanf(command, "cd %s", path);
-        printf("%s]\n", command);
         chdir(has_path ? path : "");
         return 0;
     }
@@ -45,6 +45,9 @@ char shellexec(char *command)
     }
     else
     {
+        struct cmd_cond cond;
+        process_cmd_cond(&cond, command);
+        exec_cmd(&cond);
         // execvp(args[0], args);
         
         if (errno == ENOENT)

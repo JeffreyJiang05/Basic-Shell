@@ -82,9 +82,26 @@ void exec_cmd(struct cmd_cond *cond)
             int infd = open(cond->in, O_RDONLY);
             if (infd == -1) {
                 printf("Input file does not exist\n");
+                close(backup_stdin);
+                close(backup_stdout);
                 return; 
             }
             dup2(infd, STDIN_FILENO);
+        }
+        if (cond->flag & cmd_out)
+        {
+
+            int outfd;
+            if (cond->flag & cmd_append) outfd = open(cond->out, O_CREAT | O_WRONLY | O_APPEND, 0644);
+            else outfd = open(cond->out, O_CREAT | O_WRONLY | O_TRUNC, 0644);
+            if (outfd == -1)
+            {
+                printf("ERROR - %s\n", strerror(errno));
+                close(backup_stdin);
+                close(backup_stdout);
+                return;
+            }
+            dup2(outfd, STDOUT_FILENO);
         }
 
         char **args = parse_args(stripcommand(cond->core_command));
