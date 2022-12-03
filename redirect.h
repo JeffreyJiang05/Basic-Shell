@@ -20,4 +20,8 @@ void exec_cmd(struct cmd_cond *cond);
 
 void print_cmd_cond(struct cmd_cond *cond);
 
+void process_pipe_cmd_cond(char *command, struct cmd_cond *cond1, struct cmd_cond *cond2);
+
+void pipe_exec(char *command);
+
 #endif

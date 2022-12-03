@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <errno.h>
+#include <sys/wait.h>
 
 #include "shell.h"
 #include "shellutil.h"
@@ -13,6 +14,7 @@
 void process_cmd_cond(struct cmd_cond *cond, char *command)
 {
     cond->flag = 0;
+    cond->core_command[0] = '\0';
 
     int tok_len = 1;
     size_t command_len = strlen(command);
@@ -77,6 +79,7 @@ void exec_cmd(struct cmd_cond *cond)
     {
         int backup_stdin = dup(STDIN_FILENO);
         int backup_stdout = dup(STDOUT_FILENO);
+
         if (cond->flag & cmd_in)
         {
             int infd = open(cond->in, O_RDONLY);
@@ -90,7 +93,6 @@ void exec_cmd(struct cmd_cond *cond)
         }
         if (cond->flag & cmd_out)
         {
-
             int outfd;
             if (cond->flag & cmd_append) outfd = open(cond->out, O_CREAT | O_WRONLY | O_APPEND, 0644);
             else outfd = open(cond->out, O_CREAT | O_WRONLY | O_TRUNC, 0644);
@@ -110,12 +112,12 @@ void exec_cmd(struct cmd_cond *cond)
         if (errno == ENOENT)
         {
             printf("No such command.\n");
-            exit(0);
+            exit(EXIT_SUCCESS);
 	    }
         else
         {
             printf("ERROR - %s\n", strerror(errno));
-	        exit(0);
+	        exit(EXIT_FAILURE);
         }
 
         // cleanup
@@ -125,5 +127,99 @@ void exec_cmd(struct cmd_cond *cond)
     else
     {
         printf("NO COMMAND SPECIFIED\n");
+    }
+}
+
+void process_pipe_cmd_cond(char *command, struct cmd_cond *cond1, struct cmd_cond *cond2)
+{
+    char *pipe_ptr = strchr(command, '|');
+    *pipe_ptr = '\0';
+    char *second_cmd = pipe_ptr + (pipe_ptr[1] == ' ' ? 2 : 1);
+    char *first_cmd = command;
+
+    process_cmd_cond(cond1, first_cmd);
+    process_cmd_cond(cond2, second_cmd);
+
+    if (!(cond1->flag & cmd_out) && !(cond2->flag & cmd_in)) // if out and in is not set
+    {
+        cond1->flag |= cmd_out;
+        cond2->flag |= cmd_in;
+
+        strcpy(cond1->out, "PIPE_FILE");
+        strcpy(cond2->in, "PIPE_FILE");
+    }
+    else if (!(cond2->flag & cmd_in))
+    {
+        cond2->flag |= cmd_in;
+        strcpy(cond2->in, "/dev/null");
+    }
+
+    *pipe_ptr = '|';
+}
+
+void pipe_exec(char *command)
+{
+    stripcommand(command);
+    pid_t parent_pid = getpid();
+
+    struct cmd_cond first, second;
+    process_pipe_cmd_cond(command, &first, &second);
+
+    pid_t exec_one_pid = fork();
+    if (exec_one_pid == -1) printf("ERROR - %s\n", strerror(errno));
+    else if (exec_one_pid)
+    {
+        int status;
+        pid_t wait_res = waitpid(exec_one_pid, &status, 0);
+        if (wait_res == -1)
+        {
+            printf("ERROR - %s\n", strerror(errno));
+            return;
+        }
+
+        pid_t exec_two_pid = fork();
+        if (exec_two_pid == -1) printf("ERROR - %s\n", strerror(errno));
+        else if (exec_two_pid)
+        {
+            wait_res = waitpid(exec_two_pid, &status, 0);
+            if (wait_res == -1)
+            {
+                printf("ERROR - %s\n", strerror(errno));
+                return;
+            }
+            // cleanup
+            if (strcmp(second.in, "PIPE_FILE") == 0)
+            {
+                remove("PIPE_FILE");
+            }
+        }
+        else
+        {
+            exec_cmd(&second);
+            if (errno == ENOENT)
+            {
+                printf("Command not found.\n");
+                exit(0);
+            }
+            else
+            {
+                printf("ERROR - %s\n", strerror(errno));
+                exit(3);
+            }    
+        }
+    }
+    else
+    {
+        exec_cmd(&first);
+        if (errno == ENOENT)
+        {
+            printf("Command not found.\n");
+            exit(0);
+	    }
+        else
+        {
+            printf("ERROR - %s\n", strerror(errno));
+            exit(3);
+        }        
     }
 }
