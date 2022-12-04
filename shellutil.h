@@ -1,6 +1,14 @@
 #ifndef SHELL_UTIL_H
 #define SHELL_UTIL_H
 
+extern char *userdir;
+extern char *username;
+
+/**
+ * Initialize values username and userdir
+ */
+
+void initVals();
 /**
  * parse a string into an array of strings with each pointer
  * pointing at each argument

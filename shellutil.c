@@ -3,6 +3,20 @@
 #include <string.h>
 #include "shell.h"
 #include <stdio.h>
+#include <unistd.h>
+#include <pwd.h>
+
+char *userdir;
+char *username;
+
+void initVals(){
+	struct passwd *p;
+	p = getpwuid(getuid());
+	userdir = p->pw_dir;
+	username = p->pw_name;
+}
+
+
 char *stripcommand(char *cmd)
 {
     int j = 0;
