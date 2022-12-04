@@ -10,7 +10,7 @@
 
 #define MAX_ARGS 10
 
-
+extern char *getWorkDir();
 char** parse_args(char *line)
 {
     int i = 0;
@@ -33,7 +33,11 @@ char shellexec(char *command)
 
     char **args = parse_args(command);
     if (strcmp(args[0], "cd") == 0) {
-        chdir(args[1]);
+        if (chdir(args[1])){
+		printf("Invalid directory: %s\n", args[1]);
+		return 1;
+	}
+	getWorkDir();
         return 0;
     }
     if (strcmp(args[0], "exit") == 0){
