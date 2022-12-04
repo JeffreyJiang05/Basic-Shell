@@ -33,6 +33,7 @@ char shellexec(char *command)
 
     char **args = parse_args(command);
     if (strcmp(args[0], "cd") == 0) {
+
         if (chdir(args[1])){
 		printf("Invalid directory: %s\n", args[1]);
 		return 1;
@@ -69,7 +70,9 @@ char shellexec(char *command)
         
         if (errno == ENOENT)
         {
-            printf("No such command.\n");
+	    if (strcmp("", args[0])){
+            	printf("No such command.\n");
+	    }
             exit(0);
 	}
         else

@@ -52,19 +52,18 @@ int main() {
 	printf("\033[1m%s\033[0m %s -> ", username, currentDir);
 	char *line = malloc(LINE_BUFFER_SIZE);
 	while (fgets(line, LINE_BUFFER_SIZE, stdin)) {
-        if (strstr(line, " ; ") || strstr(line, "; ") || strstr(line, " ;")) {
-            //printf("Semicolon detected\n");
-            line[strlen(line) - 1] = '\0';
-            semiColon(line);
-            printf("\033[1m%s\033[0m %s -> ", username, currentDir);
+        signal(SIGINT,sigchd);	
+	if (strstr(line, " ; ") || strstr(line, "; ") || strstr(line, " ;")) {
+        	//printf("Semicolon detected\n");
+        	line[strlen(line) - 1] = '\0';
+        	semiColon(line);
         }
         else {
         	line[strlen(line) - 1] = '\0';
 		stripcommand(line);
-        	signal(SIGINT,sigchd);
 		shellexec(line);
-		signal(SIGINT,sigmain);
-		printf("\033[1m%s\033[0m %s -> ", username, currentDir);
         }
-    }  
+	signal(SIGINT,sigmain);
+	printf("\033[1m%s\033[0m %s -> ", username, currentDir);
+	}  
 }   
