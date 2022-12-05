@@ -63,7 +63,6 @@ void *semiColon(char * cmd) {
         }
         token[strlen(token)] = '\0';
         stripcommand(token);
-        //printf("%s\n", token);
         shellexec(token);
         token = strsep(&cmd, ";");
     }
