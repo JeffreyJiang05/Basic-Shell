@@ -9,7 +9,7 @@ shellutil.o: shellutil.c shellutil.h
 redirect.o: redirect.c redirect.h
 	gcc -c redirect.c
 run:
-	./output.out
+	./shell.out
 clean:
 	rm *.o
 	rm *.out
