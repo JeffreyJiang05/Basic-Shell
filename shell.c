@@ -84,12 +84,12 @@ void shellexec(char *command)
             if (errno == ENOENT)
             {
                 printf("Command not found.\n");
-                exit(0);
+                exit(errno);
             }
             else
             {
                 printf("ERROR - %s\n", strerror(errno));
-                exit(3);
+                exit(errno);
             }
         }
     } 
