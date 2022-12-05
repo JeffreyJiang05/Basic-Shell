@@ -1,5 +1,5 @@
 compile: main.o shell.o shellutil.o redirect.o
-	gcc -o output.out main.o shell.o shellutil.o redirect.o
+	gcc -o shell.out main.o shell.o shellutil.o redirect.o
 main.o: main.c shell.h shellutil.h redirect.o
 	gcc -c main.c
 shell.o: shell.c shell.h

@@ -77,8 +77,8 @@ void shellexec(char *command)
         }
         else
         {
-            struct cmd_cond cond;
-            process_cmd_cond(&cond, command);
+            struct cmd_env cond;
+            process_cmd_env(&cond, command);
             exec_cmd(&cond);
             
             if (errno == ENOENT)
