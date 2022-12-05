@@ -5,7 +5,8 @@ extern char *userdir;
 extern char *username;
 
 /**
- * Initialize values username and userdir
+ * Initialize global values username and userdir with the
+ * current user's username and home directory.
  */
 void initVals();
 
