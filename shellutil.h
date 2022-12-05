@@ -39,4 +39,5 @@ char *stripcommand(char *cmd);
  * @arg cmd - the string containing the command
  */
 void *semiColon(char * cmd);
+
 #endif
