@@ -1,18 +1,24 @@
+#include "alias.h"
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <fcntl.h>
-#include <unistd.h>i
+#include <unistd.h>
 #include <errno.h>
 #include <string.h>
 #include <sys/stat.h>
 
-void printAliases(){
-}
-
-int addAlias(char *cmd){
+void printAliasi()
+{
 
 }
 
-int removeAlias(char *name){
+int addAlias(char *cmd)
+{
+	return 0;
+}
 
+int removeAlias(char *name)
+{
+	return 0;
 }
