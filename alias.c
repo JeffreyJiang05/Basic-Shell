@@ -8,7 +8,13 @@
 #include <string.h>
 #include <sys/stat.h>
 
-static int removeAlias(char *name){
+static struct alias parseAlias(char *str){
+	// format: aliasname="aaa -a" or aliasname=aaa
+
+}
+
+int removeAlias(char *nname){
+	struct alias newAlias = parseAlias(nname);
 	int aliasFile = open(".aliases", O_RDONLY | O_CREAT, 0777);
 	int tempFile = open(".shelltmp", O_WRONLY | O_CREAT, 0777);
 	if (aliasFile == -1)
@@ -23,7 +29,7 @@ static int removeAlias(char *name){
 	for(int i = 1; i <=aliasCount; i++)
 	{
 		read(aliasFile, &temp, sizeof(struct alias));
-		if(strcmp(name, temp.name))
+		if(strcmp(newAlias.name, temp.name))
 		{
 			write(tempFile,&temp,sizeof(struct alias));
 		}
@@ -56,7 +62,7 @@ void printAliasi()
 	}
 }
 
-int addAlias(char *alname, char *cmd)
+int addAlias(char *alname)
 {
 	// need work on this
 	removeAlias(alname);
