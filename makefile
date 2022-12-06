@@ -13,6 +13,4 @@ run:
 clean:
 	rm *.o
 	rm *.out
-compileTest:
-	gcc -o test.out test.c
 
