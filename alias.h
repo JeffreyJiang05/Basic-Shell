@@ -7,10 +7,11 @@ struct alias
 	char cmd[255];
 };
 
+int removeAlias(char *name);
+
 void printAliasi();
 
 int addAlias(char *cmd);
 
-int removeAlias(char *name);
 #endif
 

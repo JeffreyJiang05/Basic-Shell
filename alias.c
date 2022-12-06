@@ -8,28 +8,62 @@
 #include <string.h>
 #include <sys/stat.h>
 
-/* Check if an alias already exists in the '.aliases' file
- * with the same name as the argument provided
- *
- * @arg name - the name of the alias to be compared
- * @return 0 if alias with the same name do not exist
- * non-zero if other aliases exist
- */
-static int checkExistingAlias(char *name){
+static int removeAlias(char *name){
+	int aliasFile = open(".aliases", O_RDONLY | O_CREAT, 0777);
+	int tempFile = open(".shelltmp", O_WRONLY | O_CREAT, 0777);
+	if (aliasFile == -1)
+	{
+		printf("ERROR - %s\n", strerror(errno));
+		return -1;
+	}
+	struct alias temp;
+	struct stat data;
+	stat(".aliases", &data);
+	int aliasCount = (data.st_size / sizeof(struct alias));
+	for(int i = 1; i <=aliasCount; i++)
+	{
+		read(aliasFile, &temp, sizeof(struct alias));
+		if(strcmp(name, temp.name))
+		{
+			write(tempFile,&temp,sizeof(struct alias));
+		}
+	}
+	close(aliasFile);
+	close(tempFile);
+	remove(".aliases");
+	rename(".shelltmp", ".aliases");
 	return 0;
 }
 
 void printAliasi()
 {
-
+	int savefile = open(".aliases", O_RDONLY | O_CREAT, 0777);
+	if (savefile == -1)
+	{
+		printf("ERROR - %s\n", strerror(errno));
+	} 
+	else {
+		struct alias temp;
+		struct stat data;
+		stat(".aliases",&data);
+		int aliasCount = (data.st_size / sizeof(struct alias));
+		for(int i = 1; i<=aliasCount; i++)
+		{
+			read(savefile, &temp, sizeof(struct alias));
+			printf("alias %s=\'%s\'", temp.name, temp.cmd);
+		}
+		close(savefile);
+	}
 }
 
-int addAlias(char *cmd)
+int addAlias(char *alname, char *cmd)
 {
+	// need work on this
+	removeAlias(alname);
+	int savefile = open(".aliases", O_WRONLY | O_APPEND);
+	if (savefile == -1){
+		printf("ERROR - %s\n", strerror(errno));
+	}
 	return 0;
 }
 
-int removeAlias(char *name)
-{
-	return 0;
-}
