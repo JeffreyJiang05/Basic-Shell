@@ -11,7 +11,7 @@
 #include "shell.h"
 #include "shellutil.h"
 
-void process_cmd_cond(struct cmd_cond *cond, char *command)
+void process_cmd_env(struct cmd_env *cond, char *command)
 {
     cond->flag = 0;
     cond->core_command[0] = '\0';
@@ -65,7 +65,7 @@ void process_cmd_cond(struct cmd_cond *cond, char *command)
     free(tok_arr);
 }
 
-void print_cmd_cond(struct cmd_cond *cond)
+void print_cmd_env(struct cmd_env *cond)
 {
     printf("core_command: %s\n", cond->flag & cmd_has_command ? cond->core_command : "NULL");
     printf("in: %s\n", cond->flag & cmd_in ? cond->in : "STDIN");
@@ -73,7 +73,7 @@ void print_cmd_cond(struct cmd_cond *cond)
     printf("append: %s\n", cond->flag & cmd_append ? "True" : "False");
 }
 
-void exec_cmd(struct cmd_cond *cond)
+void exec_cmd(struct cmd_env *cond)
 {
     if (cond->flag & cmd_has_command)
     {
@@ -130,15 +130,15 @@ void exec_cmd(struct cmd_cond *cond)
     }
 }
 
-void process_pipe_cmd_cond(char *command, struct cmd_cond *cond1, struct cmd_cond *cond2)
+void process_pipe_cmd_env(char *command, struct cmd_env *cond1, struct cmd_env *cond2)
 {
     char *pipe_ptr = strchr(command, '|');
     *pipe_ptr = '\0';
     char *second_cmd = pipe_ptr + (pipe_ptr[1] == ' ' ? 2 : 1);
     char *first_cmd = command;
 
-    process_cmd_cond(cond1, first_cmd);
-    process_cmd_cond(cond2, second_cmd);
+    process_cmd_env(cond1, first_cmd);
+    process_cmd_env(cond2, second_cmd);
 
     if (!(cond1->flag & cmd_out) && !(cond2->flag & cmd_in)) // if out and in is not set
     {
@@ -162,8 +162,8 @@ void pipe_exec(char *command)
     stripcommand(command);
     pid_t parent_pid = getpid();
 
-    struct cmd_cond first, second;
-    process_pipe_cmd_cond(command, &first, &second);
+    struct cmd_env first, second;
+    process_pipe_cmd_env(command, &first, &second);
 
     pid_t exec_one_pid = fork();
     if (exec_one_pid == -1) printf("ERROR - %s\n", strerror(errno));

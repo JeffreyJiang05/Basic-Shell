@@ -1,14 +1,13 @@
 #ifndef SHELL_H
 #define SHELL_H
 
-
 /**
  * splits the current process and executes the provided command
  * in the child process. The parent process will wait until the 
- * child process has finished.
+ * child process has finished. Can process one pipe operator and
+ * the redirection operators (<, >, >>) as well.
  * 
  * @arg command - the command to execute as a string
- * @return a boolean that signifies if the command was successful or failed
  */
 void shellexec(char *command);
 
