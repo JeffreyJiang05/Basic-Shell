@@ -9,8 +9,9 @@
 
 #include "shellutil.h"
 #include "redirect.h"
+#include "alias.h"
 
-extern char *getWorkDir();
+char *getWorkDir();
 
 void shellexec(char *command)
 {
@@ -60,6 +61,23 @@ void shellexec(char *command)
             printf("Bye!\n");
             exit(0);
         }
+	else if (strncmp(command, "alias", 5) == 0)
+	{
+		if (command[5] == '\0')
+		{
+			printAliasi();
+			return;
+		}
+		if (command[5] == ' '){
+			return addAlias(command+6);
+		}
+	}
+	else if (strncmp(command, "unalias", 7) == 0)
+	{
+		if (command[7] == ' '){
+			return removeAlias(command+8);
+		}
+	}
 
         pid_t child_pid = fork();
         if (child_pid == -1)
